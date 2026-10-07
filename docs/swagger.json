@@ -1,0 +1,135 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "Biblioteca Digital API",
+        "description": "Documentação da API da Biblioteca Digital"
+    },
+    "host": "localhost:3000",
+    "basePath": "/api",
+    "schemes": ["http"],
+    "paths": {
+        "/books": {
+            "post": {
+                "summary": "Criar um novo livro",
+                "description": "Adiciona um novo livro à biblioteca digital",
+                "parameters": [
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "description": "Dados do livro criado",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "title": { "type": "string", "example": "O senhor dos Anéis" },
+                                "author": { "type": "string", "example": "J.R.R Tolkien" },
+                                "year": { "type": "integer", "example": 1954 },
+                                "genre": { "type": "string", "example": "Fantasia" }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": { "description": "Livro criado com sucesso" },
+                    "500": { "description": "Erro interno do servidor" }
+                }
+            },
+            "get": {
+                "summary": "Listar livros com paginação e ordenação",
+                "description": "Retorna os livros cadastrados, com suporte a paginação e ordenação.",
+                "parameters": [
+                     {
+                        "name": "title",
+                        "in": "query",
+                        "description": "filtrar por título do livro",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "author",
+                        "in": "query",
+                        "description": "filtrar por autor do livro",
+                        "required": false,
+                        "type": "string"
+                    },
+
+
+
+                    { "name": "page", "in": "query", "type": "integer", "default": 1 },
+                    { "name": "limit", "in": "query", "type": "integer", "default": 10 },
+                    { "name": "sortBy", "in": "query", "type": "string", "example": "year" },
+                    { "name": "order", "in": "query", "type": "string", "enum": ["asc", "desc"], "default": "asc" }
+                ],
+                "responses": {
+                    "200": { "description": "Lista de livros retornada com sucesso", 
+                "schema": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "id": {"type": "string",
+                        "example": "88"},
+                        "title": {"type": "string", "example": "O Senhor dos Anéis"},
+                        "author": {"type": "string", "example": "J.R.R Tolkien"},
+                        "year": {"type": "integer", "example": 1954},
+                        "genre": {"type": "string", "example": "Fantasia"}
+                        }
+                    }
+                } },
+                    "500": { "description": "Erro interno do servidor" }
+                }
+            }
+        },
+        "/books/{id}": {
+            "get": {
+                "summary": "Buscar livro por ID com filtros avançados",
+                "description": "Retorna um livro específico, podendo escolher quais campos vêm na resposta.",
+                "parameters": [
+                    { "name": "id", "in": "path", "required": true, "type": "string" },
+                    { "name": "fields", "in": "query", "type": "string", "example": "title,author" }
+                ],
+                "responses": {
+                    "200": { "description": "Livro encontrado" },
+                    "404": { "description": "Livro não encontrado" }
+                }
+            },
+            "patch": {
+                "summary": "Atualizar informações de um livro",
+                "parameters": [
+                    { "name": "id", "in": "path", "required": true, "type": "string" },
+                    {
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "title": { "type": "string", "example": "O Senhor dos Anéis" },
+                                "author": { "type": "string", "example": "J.R.R. Tolkien" },
+                                "year": { "type": "integer", "example": 1954 },
+                                "genre": { "type": "string", "example": "Fantasia" }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": { "description": "Livro atualizado com sucesso" },
+                    "404": { "description": "Livro não encontrado" },
+                    "500": { "description": "Erro ao atualizar livro" }
+                }
+            },
+            "delete": {
+                "summary": "Remover um livro da biblioteca",
+                "parameters": [
+                    { "name": "id", "in": "path", "required": true, "type": "string" }
+                ],
+                "responses": {
+                    "200": { "description": "Livro excluído com sucesso" },
+                    "404": { "description": "Livro não encontrado" },
+                    "500": { "description": "Erro ao excluir livro" }
+                }
+            }
+        }
+    }
+}
